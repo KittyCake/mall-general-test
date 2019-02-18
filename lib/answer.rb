@@ -57,10 +57,69 @@ end
 
 # Q4. Given a 2D board and a word, find if the word exists in the grid.
 def two_d(board, word)
+  rows = board.size
+  columns = board[0].size
+  marks = Array.new(rows) { Array.new(columns) }
 
+  # 1. check every character
+  rows.times do |row|
+    columns.times do |column|
+      # call private method
+      # return true if word exist
+      return true if exist(board, row, column, word, 0, marks)
+    end
+  end
+
+  # 2. if don't have word
+  return false
 end
 
 # Q5. Calculate the sum of two integers a and b, but you are not allowed to use the operator + and -.
 def sum(a, b)
   return Math.log10(10**a * 10**b).to_i
 end
+
+private
+
+# method for Q4
+def exist(board, row, column, word, i, marks)
+  # if not last one
+  return false if marks[row][column] == true
+  # if charater does not exist
+  return false if board[row][column] != word[i]
+  return true if i == word.size - 1
+
+  marks[row][column] = true
+
+  # check char that around itself
+  [-1, 1].each do |offset|
+    # check left and right
+    new_row = row + offset
+    # make sure it's not out of the array
+    if new_row.between?(0, board.size - 1)
+      # check next if it's not last one
+      return true if exist(board, new_row, column, word, i + 1, marks)
+    end
+
+    # check up and down
+    new_column = column + offset
+    # make sure it's not out of the array
+    if new_column.between?(0, board[0].size - 1)
+      # check next if it's not last one
+      return true if exist(board, row, new_column, word, i + 1, marks)
+    end
+  end
+
+  # last one
+  marks[row][column] = false
+
+  # if not exist
+  return false
+end
+
+
+
+
+
+
+
