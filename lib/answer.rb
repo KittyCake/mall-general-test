@@ -19,7 +19,39 @@ end
 
 # Q3. Given a set of non-overlapping intervals, insert a new interval into the intervals (merge if necessary).
 def non_overlapping(set, new_interval)
+  # 1. delete number that in the range of new_interval
+  set.each do |interval|
+    interval.each_with_index do |num, i|
+      if num > new_interval[0] && num < new_interval[1]
+        interval[i] = nil
+      end
+    end
+  end
 
+  set.delete([nil, nil])
+
+  # 2. put new_interval number into it
+  set.each_with_index do |interval, i|
+    if interval[1].nil?
+      if set[i + 1][0].nil?
+        interval[1] = set[i + 1][1]
+        set.delete_at(i + 1)
+      else
+        interval[1] = new_interval[1]
+      end
+    elsif interval[0].nil?
+      interval[0] = new_interval[0]
+    end
+
+    unless set[i + 1].nil?
+      if interval[1] == set[i + 1][0]
+        interval[1] = set[i + 1][1]
+        set.delete_at(i + 1)
+      end
+    end
+  end
+
+  return set
 end
 
 
